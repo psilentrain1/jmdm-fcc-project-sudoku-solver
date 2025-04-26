@@ -43,6 +43,7 @@ class SudokuSolver {
     const puzzleArray = puzzleStringToArray(puzzleString);
     const coord = [rowConverted - 1, column - 1];
 
+    if (puzzleArray[coord[0]][coord[1]] === String(value)) return true;
     if (puzzleArray[coord[0]][coord[1]] !== ".") return false;
     if (puzzleArray[coord[0]].includes(String(value))) return false;
 
@@ -54,6 +55,7 @@ class SudokuSolver {
     const puzzleArray = puzzleStringToArray(puzzleString);
     const coord = [rowConverted - 1, column - 1];
 
+    if (puzzleArray[coord[0]][coord[1]] === String(value)) return true;
     if (puzzleArray[coord[0]][coord[1]] !== ".") return false;
     for (let r = 0; r < 9; r++) {
       if (puzzleArray[r][coord[1]] === String(value)) return false;
@@ -67,6 +69,7 @@ class SudokuSolver {
     const puzzleArray = puzzleStringToArray(puzzleString);
     const coord = [rowConverted - 1, column - 1];
 
+    if (puzzleArray[coord[0]][coord[1]] === String(value)) return true;
     if (puzzleArray[coord[0]][coord[1]] !== ".") return false;
 
     const regionRowStart = Math.floor(coord[0] / 3) * 3;
