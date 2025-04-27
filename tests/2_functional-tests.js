@@ -7,9 +7,25 @@ chai.use(chaiHttp);
 
 suite("Functional Tests", () => {
   const validString = "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+  const validStringSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
   const invalidString = "1.5..2.84..63.12.7.2..5.af..9..1....8.2.3674.3.7.2g.9$47...8..1..16....926914.37.";
+  const unsolvableString = "781543926..61795..9546287316958372141482653793279148..413752698..2...4..5794861.3";
   suite("POST /api/solve", function () {
-    // test("Solve a puzzle with valid puzzle string", function(done) {})
+    test("Solve a puzzle with valid puzzle string", function (done) {
+      chai
+        .request(server)
+        .keepOpen()
+        .post("/api/solve")
+        .send({
+          puzzle: validString,
+        })
+        .end(function (err, res) {
+          assert.equal(res.status, 200, "Status should be 200");
+          assert.property(res.body, "solution", "Solution should be present");
+          assert.equal(res.body.solution, validStringSolution, "Solution should match the expected solution");
+          done();
+        });
+    });
     test("Solve a puzzle with missing puzzle string", function (done) {
       chai
         .request(server)
@@ -62,7 +78,22 @@ suite("Functional Tests", () => {
           done();
         });
     });
-    // test("Solve a puzzle that cannot be solved", function(done) {})
+    test("Solve a puzzle that cannot be solved", function (done) {
+      chai
+        .request(server)
+        .keepOpen()
+        .post("/api/solve")
+        .send({
+          puzzle: unsolvableString,
+        })
+        .end(function (err, res) {
+          assert.equal(res.status, 400, "Status should be 400");
+          assert.notProperty(res.body, "solution", "Solution should not be present");
+          assert.property(res.body, "error", "Error should be present");
+          assert.equal(res.body.error, "Puzzle cannot be solved", "Error message should be 'Puzzle cannot be solved'");
+          done();
+        });
+    });
   });
   suite("POST /api/check", function () {
     test("Check a puzzle placement with all fields", function (done) {
