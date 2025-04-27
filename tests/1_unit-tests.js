@@ -69,4 +69,6 @@ suite("Unit Tests", () => {
       assert.isFalse(result, "Invalid region placement should return false");
     });
   });
+  // TODO: Implement the solve() method in SudokuSolver and add tests for it
+  suite("SudokuSolver.solve()", function () {});
 });
