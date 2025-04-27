@@ -70,5 +70,9 @@ suite("Unit Tests", () => {
     });
   });
   // TODO: Implement the solve() method in SudokuSolver and add tests for it
-  suite("SudokuSolver.solve()", function () {});
+  suite("SudokuSolver.solve()", function () {
+    // test("Valid puzzle strings pass the solver", function(){})
+    // test("Invalid puzzle strings fail the solver", function(){})
+    // test("Solver returns the expected solution for an incomplete puzzle", function(){})
+  });
 });
