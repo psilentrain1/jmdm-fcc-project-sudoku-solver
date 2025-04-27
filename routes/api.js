@@ -6,7 +6,14 @@ module.exports = function (app) {
   let solver = new SudokuSolver();
 
   app.route("/api/check").post((req, res) => {
-    if (SudokuSolver.validate(puzzle) !== true) return res.status(400).json({ error: SudokuSolver.validate(puzzle).error });
+    if (!req.body.puzzle || !req.body.coordinate || !req.body.value) return res.status(400).json({ error: "Required field(s) missing" });
+    if (Number(req.body.value) < 1 || Number(req.body.value) > 9) return res.status(400).json({ error: "Invalid value" });
+    if (req.body.coordinate.length !== 2) return res.status(400).json({ error: "Invalid coordinate" });
+    if (req.body.coordinate[0].toUpperCase() < "A" || req.body.coordinate[0].toUpperCase() > "I")
+      return res.status(400).json({ error: "Invalid coordinate" });
+    if (Number(req.body.coordinate[1]) < 1 || Number(req.body.coordinate[1]) > 9)
+      return res.status(400).json({ error: "Invalid coordinate" });
+    if (solver.validate(req.body.puzzle) !== true) return res.status(400).json({ error: solver.validate(req.body.puzzle).error });
 
     const rowValid = solver.checkRowPlacement(req.body.puzzle, req.body.coordinate[0], req.body.coordinate[1], req.body.value);
     const colValid = solver.checkColPlacement(req.body.puzzle, req.body.coordinate[0], req.body.coordinate[1], req.body.value);
