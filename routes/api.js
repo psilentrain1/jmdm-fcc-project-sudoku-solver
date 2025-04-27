@@ -36,5 +36,10 @@ module.exports = function (app) {
 
     if (!puzzle || puzzle === "") return res.status(400).json({ error: "Required field missing" });
     if (solver.validate(puzzle) !== true) return res.status(400).json({ error: solver.validate(puzzle).error });
+
+    const solution = solver.solve(puzzle);
+    if (solution.error) return res.status(400).json({ error: solution.error });
+    if (solution.length !== 81) return res.status(400).json({ error: "Puzzle cannot be solved" });
+    return res.status(200).json({ solution: solution });
   });
 };
