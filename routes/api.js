@@ -34,7 +34,7 @@ module.exports = function (app) {
   app.route("/api/solve").post((req, res) => {
     const puzzle = req.body.puzzle;
 
-    if (!puzzle) return res.status(400).json({ error: "Required field missing" });
-    if (SudokuSolver.validate(puzzle) !== true) return res.status(400).json({ error: SudokuSolver.validate(puzzle).error });
+    if (!puzzle || puzzle === "") return res.status(400).json({ error: "Required field missing" });
+    if (solver.validate(puzzle) !== true) return res.status(400).json({ error: solver.validate(puzzle).error });
   });
 };
