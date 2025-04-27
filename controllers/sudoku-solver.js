@@ -57,8 +57,8 @@ class SudokuSolver {
 
     if (puzzleArray[coord[0]][coord[1]] === String(value)) return true;
     if (puzzleArray[coord[0]][coord[1]] !== ".") return false;
-    for (let r = 0; r < 9; r++) {
-      if (puzzleArray[r][coord[1]] === String(value)) return false;
+    for (let row = 0; row < 9; row++) {
+      if (puzzleArray[row][coord[1]] === String(value)) return false;
     }
 
     return true;
@@ -75,16 +75,78 @@ class SudokuSolver {
     const regionRowStart = Math.floor(coord[0] / 3) * 3;
     const regionColStart = Math.floor(coord[1] / 3) * 3;
 
-    for (let r = regionRowStart; r < regionRowStart + 3; r++) {
-      for (let c = regionColStart; c < regionColStart + 3; c++) {
-        if (puzzleArray[r][c] === String(value)) return false;
+    for (let row = regionRowStart; row < regionRowStart + 3; row++) {
+      for (let col = regionColStart; col < regionColStart + 3; col++) {
+        if (puzzleArray[row][col] === String(value)) return false;
       }
     }
 
     return true;
   }
 
-  solve(puzzleString) {}
+  solve(puzzleString) {
+    const validation = this.validate(puzzleString);
+    if (validation !== true) return validation;
+
+    const puzzle = puzzleStringToArray(puzzleString);
+
+    function solver(puzzle) {
+      const emptyCell = findEmptyCell(puzzle);
+      if (!emptyCell) return true;
+
+      const [row, col] = emptyCell;
+
+      // Try numbers 1-9
+      for (let num = 1; num <= 9; num++) {
+        const rowLetter = String.fromCharCode(row + 65);
+
+        // Check if valid
+        if (
+          this.checkRowPlacement(puzzleString, rowLetter, col + 1, num) &&
+          this.checkColPlacement(puzzleString, rowLetter, col + 1, num) &&
+          this.checkRegionPlacement(puzzleString, rowLetter, col + 1, num)
+        ) {
+          // Place the number in the cell
+          puzzle[row][col] = String(num);
+
+          // Update the puzzle string
+          puzzleString = puzzle.map((row) => row.join("")).join("");
+
+          // Recursively try to solve the rest of the puzzle
+          if (solver(board)) {
+            return true;
+          }
+
+          // backtrack
+          puzzle[row][col] = ".";
+          puzzleString = puzzle.map((row) => row.join("")).join("");
+        }
+      }
+
+      // No solution found
+      return false;
+    }
+
+    function findEmptyCell(puzzle) {
+      for (let row = 0; row < 9; row++) {
+        for (let col = 0; col < 9; col++) {
+          if (puzzle[row][col] === ".") {
+            return [row, col];
+          }
+        }
+      }
+      return null;
+    }
+
+    // Attempt to solve
+    const solutionFound = solver(puzzle);
+
+    if (solutionFound) {
+      return puzzle.map((row) => row.join("")).join("");
+    } else {
+      return { error: "Puzzle cannot be solved" };
+    }
+  }
 }
 
 module.exports = SudokuSolver;
