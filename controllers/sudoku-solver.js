@@ -85,12 +85,18 @@ class SudokuSolver {
   }
 
   solve(puzzleString) {
+    if (!puzzleString || puzzleString === "") return { error: "Required field missing" };
+    if (puzzleString.length > 2 && puzzleString.length < 81) {
+      const missingChars = 81 - puzzleString.length;
+      puzzleString = puzzleString + ".".repeat(missingChars);
+    }
+
     const validation = this.validate(puzzleString);
     if (validation !== true) return validation;
 
     const puzzle = puzzleStringToArray(puzzleString);
 
-    function solver(puzzle) {
+    const solver = (puzzle) => {
       const emptyCell = findEmptyCell(puzzle);
       if (!emptyCell) return true;
 
@@ -113,7 +119,7 @@ class SudokuSolver {
           puzzleString = puzzle.map((row) => row.join("")).join("");
 
           // Recursively try to solve the rest of the puzzle
-          if (solver(board)) {
+          if (solver(puzzle)) {
             return true;
           }
 
@@ -125,9 +131,9 @@ class SudokuSolver {
 
       // No solution found
       return false;
-    }
+    };
 
-    function findEmptyCell(puzzle) {
+    const findEmptyCell = (puzzle) => {
       for (let row = 0; row < 9; row++) {
         for (let col = 0; col < 9; col++) {
           if (puzzle[row][col] === ".") {
@@ -136,7 +142,7 @@ class SudokuSolver {
         }
       }
       return null;
-    }
+    };
 
     // Attempt to solve
     const solutionFound = solver(puzzle);
