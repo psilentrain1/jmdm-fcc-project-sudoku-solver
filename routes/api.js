@@ -7,6 +7,7 @@ module.exports = function (app) {
 
   app.route("/api/check").post((req, res) => {
     if (!req.body.puzzle || !req.body.coordinate || !req.body.value) return res.status(400).json({ error: "Required field(s) missing" });
+    if (isNaN(Number(req.body.value))) return res.status(400).json({ error: "Invalid value" });
     if (Number(req.body.value) < 1 || Number(req.body.value) > 9) return res.status(400).json({ error: "Invalid value" });
     if (req.body.coordinate.length !== 2) return res.status(400).json({ error: "Invalid coordinate" });
     if (req.body.coordinate[0].toUpperCase() < "A" || req.body.coordinate[0].toUpperCase() > "I")
